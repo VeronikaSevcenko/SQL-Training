@@ -1,4 +1,5 @@
 import { Database } from "../src/database";
+import { MOVIES } from "../src/table-names";
 import { minutes } from "./utils";
 
 describe("Simple Queries", () => {
@@ -11,7 +12,7 @@ describe("Simple Queries", () => {
   it(
     "should select total budget and revenue from movies, by using adjusted financial data",
     async done => {
-      const query = `todo`;
+      const query = `SELECT round(SUM(budget_adjusted),2) as total_budget, round(SUM(revenue_adjusted),2) as total_revenue from movies`;
       const result = await db.selectSingleRow(query);
 
       expect(result).toEqual({
@@ -27,7 +28,7 @@ describe("Simple Queries", () => {
   it(
     "should select count from movies where budget was more than 100000000 and release date after 2009",
     async done => {
-      const query = `todo`;
+      const query = `SELECT count(*) as count from movies WHERE budget > 100000000 and release_date >= 2009`;
       const result = await db.selectSingleRow(query);
 
       expect(result.count).toBe(87);
@@ -40,7 +41,7 @@ describe("Simple Queries", () => {
   it(
     "should select top three movies order by budget where release data is after 2009",
     async done => {
-      const query = `todo`;
+      const query = `SELECT original_title, budget, revenue from movies WHERE release_date >=2009 order by budget desc limit 3`;
       const result = await db.selectMultipleRows(query);
 
       expect(result).toEqual([
@@ -69,7 +70,7 @@ describe("Simple Queries", () => {
   it(
     "should select count of movies where homepage is secure (starts with https)",
     async done => {
-      const query = `todo`;
+      const query = `SELECT count(*) as count from movies WHERE substr(homepage,1,5) = 'https'`;
       const result = await db.selectSingleRow(query);
 
       expect(result.count).toBe(42);
@@ -82,7 +83,7 @@ describe("Simple Queries", () => {
   it(
     "should select count of movies released every year",
     async done => {
-      const query = `todo`;
+      const query = `SELECT count(*) as count, substr(release_date,1, 4) as year from movies GROUP BY year order by year desc`;
       const result = await db.selectMultipleRows(query);
 
       expect(result.length).toBe(8);
@@ -109,7 +110,7 @@ describe("Simple Queries", () => {
   it(
     "should select top three users which left most ratings",
     async done => {
-      const query = `todo`;
+      const query = `SELECT user_id, count(*) as count from MOVIE_RATINGS GROUP BY user_id order by count desc limit 3`;
       const result = await db.selectMultipleRows(query);
 
       expect(result).toEqual([
@@ -135,7 +136,7 @@ describe("Simple Queries", () => {
   it(
     "should select count of ratings left each month",
     async done => {
-      const query = `todo`;
+      const query = `SELECT count(*) as count, substr(time_created,6,2) as month from MOVIE_RATINGS GROUP BY month order by count desc`;
       const result = await db.selectMultipleRows(query);
 
       expect(result).toEqual([
